@@ -16,6 +16,8 @@
       RANCHER_PROJECT_ID: 'p-hm2z1'
       RANCHER_URL: 'https://rancher.aperturescience.tld'
       RANCHER_WORKLOADS: 'wheatley1,wheatley2'
+      RANCHER_DOCKER_REGISTRY: 'private-docker-registry.com'
+      UPDATE_IMAGES:'registry.docker.com/test/rancher-redeploy-workload:sha-5de12we'
 ```
 
 ### Running as a docker container
@@ -28,6 +30,8 @@ $ docker run --rm -it \
     -e RANCHER_PROJECT_ID="p-hm2z1" \
     -e RANCHER_URL="https://rancher.aperturescience.tld" \
     -e RANCHER_WORKLOADS="wheatley1,wheatley2" \
+    -e RANCHER_DOCKER_REGISTRY='private-docker-registry.com' \
+    -e UPDATE_IMAGES='registry.docker.com/test/rancher-redeploy-workload:sha-5de12we'
     th0th/rancher-redeploy-workload:v0.6
 ```
 
