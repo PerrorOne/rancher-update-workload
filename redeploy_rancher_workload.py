@@ -15,6 +15,8 @@ required_environment_variables: List[str] = [
     'RANCHER_PROJECT_ID',
     'RANCHER_URL',
     'RANCHER_WORKLOADS',
+    'RANCHER_DOCKER_REGISTRY'
+    'UPDATE_IMAGES' # 要更新的镜像地址： 类似hub.docker.com/test/get:1a1d2547
 ]
 
 missing_environment_variables: List[str] = []
@@ -27,7 +29,6 @@ if len(missing_environment_variables) > 0:
     logging.error("These environment variables are required but not set: {missing_environment_variables}".format(
         missing_environment_variables=', '.join(missing_environment_variables),
     ))
-
     sys.exit(1)
 
 rancher_bearer_token = os.environ['RANCHER_BEARER_TOKEN']
@@ -36,7 +37,15 @@ rancher_namespace = os.environ['RANCHER_NAMESPACE']
 rancher_project_id = os.environ['RANCHER_PROJECT_ID']
 rancher_url = os.environ['RANCHER_URL']
 rancher_workloads = os.environ['RANCHER_WORKLOADS']
+update_image = os.environ["UPDATE_IMAGES"]
+# 这里要做一下转换，如果要部署的docker可以使用内网， 那么替换成内网的域名
+rancher_docker_registry = os.environ.get("RANCHER_DOCKER_REGISTRY", "")
+if rancher_docker_registry:
+    update_image = "registry.cn-shenzhen.aliyuncs.com/x7-seo-ops/x7/get:sha-3d59ff9".split("/")[1:]
+    update_image.insert(0, "baidu.com")
+    update_image = "/".join(update_image)
 
+logging.info("rancher要更新的镜像地址是:{}".format(update_image))
 
 def generate_workload_url(r_workload: str) -> str:
     return (
@@ -71,6 +80,8 @@ for rancher_workload in rancher_workloads.split(','):
     workload = response_get.json()
 
     workload['annotations']['cattle.io/timestamp'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+    for index, i in enumerate(workload["containers"]):
+        workload["containers"][index]["image"] = update_image
 
     response_put = requests.put(
         headers={
