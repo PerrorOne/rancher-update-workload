@@ -35,9 +35,9 @@ $ docker run --rm -it \
     th0th/rancher-redeploy-workload:v0.6
 ```
 
-## Shameless plug
+##无耻的插头
 
-I am an indie hacker and I am running an uptime monitoring and analytics platform called [WebGazer](https://www.webgazer.io). You might want to check it out if you are running an online business and want to notice the incidents before your customers.
+我是一个独立的黑客，并且正在运行一个名为[WebGazer] （https://www.webgazer.io）的正常运行时间监视和分析平台。您可能想检查一下是否正在运行在线业务，并想在客户面前注意到这些事件。
 
 ## License
 
