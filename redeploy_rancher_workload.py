@@ -3,7 +3,6 @@ import logging
 import os
 import sys
 from typing import List
-
 import requests
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level=logging.INFO)
@@ -38,13 +37,12 @@ rancher_project_id = os.environ['RANCHER_PROJECT_ID']
 rancher_url = os.environ['RANCHER_URL']
 rancher_workloads = os.environ['RANCHER_WORKLOADS']
 update_image = os.environ["UPDATE_IMAGES"]
+github_sha = os.environ["GITHUB_SHA"]
+
 # 这里要做一下转换，如果要部署的docker可以使用内网， 那么替换成内网的域名
 rancher_docker_registry = os.environ.get("RANCHER_DOCKER_REGISTRY", "")
 if rancher_docker_registry:
-    update_image = rancher_docker_registry.split("/")[1:]
-    update_image.insert(0, rancher_docker_registry)
-    update_image = "/".join(update_image)
-
+    update_image = "{}/{}:sha-{}".format(rancher_docker_registry, update_image, github_sha[:7])
 logging.info("rancher要更新的镜像地址是:{}".format(update_image))
 
 def generate_workload_url(r_workload: str) -> str:
