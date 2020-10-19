@@ -41,8 +41,8 @@ update_image = os.environ["UPDATE_IMAGES"]
 # 这里要做一下转换，如果要部署的docker可以使用内网， 那么替换成内网的域名
 rancher_docker_registry = os.environ.get("RANCHER_DOCKER_REGISTRY", "")
 if rancher_docker_registry:
-    update_image = "registry.cn-shenzhen.aliyuncs.com/x7-seo-ops/x7/get:sha-3d59ff9".split("/")[1:]
-    update_image.insert(0, "baidu.com")
+    update_image = rancher_docker_registry.split("/")[1:]
+    update_image.insert(0, rancher_docker_registry)
     update_image = "/".join(update_image)
 
 logging.info("rancher要更新的镜像地址是:{}".format(update_image))
