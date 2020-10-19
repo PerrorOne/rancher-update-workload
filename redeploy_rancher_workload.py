@@ -72,6 +72,7 @@ for rancher_workload in rancher_workloads.split(','):
             **headers
         },
         url=url,
+        verify=False,
     )
 
     response_get.raise_for_status()
@@ -87,6 +88,7 @@ for rancher_workload in rancher_workloads.split(','):
         },
         json=workload,
         url=url,
+        verify=False,
     )
 
     response_put.raise_for_status()
