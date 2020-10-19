@@ -14,8 +14,8 @@ required_environment_variables: List[str] = [
     'RANCHER_PROJECT_ID',
     'RANCHER_URL',
     'RANCHER_WORKLOADS',
-    'RANCHER_DOCKER_REGISTRY'
-    'UPDATE_IMAGES' # 要更新的镜像地址： 类似hub.docker.com/test/get:1a1d2547
+    'RANCHER_DOCKER_REGISTRY',
+    'UPDATE_IMAGES', # 要更新的镜像地址： 类似hub.docker.com/test/get:1a1d2547
 ]
 
 missing_environment_variables: List[str] = []
