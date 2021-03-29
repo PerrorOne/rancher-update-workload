@@ -16,7 +16,6 @@ required_environment_variables: List[str] = [
     'RANCHER_WORKLOADS',
     'RANCHER_DOCKER_REGISTRY',
     'UPDATE_IMAGES', # 要更新的镜像地址： 类似hub.docker.com/test/get:1a1d2547
-    'SLACK_API',
 ]
 
 missing_environment_variables: List[str] = []
@@ -96,5 +95,6 @@ for rancher_workload in rancher_workloads.split(','):
     logging.info("Workload {rancher_workload} is successfully redeployed.".format(
         rancher_workload=rancher_workload,
     ))
+logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
 if os.environ["SLACK_API"]:
-    requests.get(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
+    requests.post(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
