@@ -97,4 +97,5 @@ for rancher_workload in rancher_workloads.split(','):
     ))
 logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
 if os.environ["SLACK_API"]:
-    requests.post(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
+    resp = requests.post(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
+    logging.info("slack return :", resp.text)
