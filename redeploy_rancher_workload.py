@@ -95,7 +95,8 @@ for rancher_workload in rancher_workloads.split(','):
     logging.info("Workload {rancher_workload} is successfully redeployed.".format(
         rancher_workload=rancher_workload,
     ))
-logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
-if os.environ["SLACK_API"]:
+
+if os.environ.get("SLACK_API", ""):
+    logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
     resp = requests.post(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
     logging.info("slack return :", resp.text)
