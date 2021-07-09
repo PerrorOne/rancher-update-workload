@@ -39,11 +39,21 @@ rancher_workloads = os.environ['RANCHER_WORKLOADS']
 update_image = os.environ["UPDATE_IMAGES"]
 github_sha = os.environ["GITHUB_SHA"]
 
+
+def send_msg_to_slack(msg):   
+    if os.environ.get("SLACK_API", ""):
+        logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
+        resp = requests.post(os.environ["SLACK_API"], json={"text": msg})
+        logging.info("slack return :", resp.text)
+    
+    
 # 这里要做一下转换，如果要部署的docker可以使用内网， 那么替换成内网的域名
 rancher_docker_registry = os.environ.get("RANCHER_DOCKER_REGISTRY", "")
 if rancher_docker_registry:
     update_image = "{}/{}:sha-{}".format(rancher_docker_registry, update_image, github_sha[:7])
 logging.info("rancher要更新的镜像地址是:{}".format(update_image))
+
+send_msg_to_slack("镜像构建完成, 即将要更新的镜像名为: %s" % update_image)
 
 def generate_workload_url(r_workload: str) -> str:
     return (
@@ -81,7 +91,6 @@ for rancher_workload in rancher_workloads.split(','):
     workload['annotations']['cattle.io/timestamp'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
     for index, i in enumerate(workload["containers"]):
         workload["containers"][index]["image"] = update_image
-
     response_put = requests.put(
         headers={
             **headers,
@@ -90,13 +99,11 @@ for rancher_workload in rancher_workloads.split(','):
         url=url,
         verify=False,
     )
-
+       
     response_put.raise_for_status()    
     logging.info("Workload {rancher_workload} is successfully redeployed.".format(
         rancher_workload=rancher_workload,
     ))
 
-if os.environ.get("SLACK_API", ""):
-    logging.info("slack_api: {}".format(os.environ["SLACK_API"]))
-    resp = requests.post(os.environ["SLACK_API"], json={"text": "%s代码已提交, 更新rancher工作节点成功" % rancher_workload})
-    logging.info("slack return :", resp.text)
+ 
+send_msg_to_slack("%s代码已提交, 更新rancher工作节点成功, 更新的镜像名为: %s" % (rancher_workload, update_image))
